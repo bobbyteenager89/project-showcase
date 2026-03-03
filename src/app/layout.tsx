@@ -1,27 +1,34 @@
-import type { Metadata } from "next";
-import { Spectral } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import { TabNav } from '@/components/TabNav';
+import './globals.css';
 
-const spectral = Spectral({
-  variable: "--font-spectral",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700"],
-  style: ["normal", "italic"],
-});
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: "What I'm Building",
-  description: "Projects built with Claude Code",
+  title: 'How I Build',
+  description: 'My Claude Code workflow, projects, and setup',
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en">
-      <body className={`${spectral.variable} antialiased`}>{children}</body>
+      <body className={inter.className}>
+        <header className="border-b border-gray-200">
+          <div className="max-w-2xl mx-auto px-6 py-6">
+            <h1 className="text-xl font-semibold tracking-tight">How I Build</h1>
+            <p className="text-sm text-gray-500 mt-1">My Claude Code workflow, projects, and tools</p>
+          </div>
+        </header>
+        <TabNav />
+        <main className="max-w-2xl mx-auto px-6 py-10">
+          {children}
+        </main>
+      </body>
     </html>
   );
 }
