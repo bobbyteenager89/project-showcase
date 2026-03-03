@@ -1,0 +1,20 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-soft-black: #1A1A1A;
+  --color-muted-gray: #6B6B6B;
+  --color-border: #E5E5E5;
+  --color-surface: #FAFAFA;
+  --color-badge-live: #16A34A;
+  --color-badge-progress: #CA8A04;
+  --color-badge-concept: #9333EA;
+  --font-serif: var(--font-spectral);
+}
+
+body {
+  background: #ffffff;
+  color: var(--color-soft-black);
+  font-family: var(--font-serif), Georgia, "Times New Roman", serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
