@@ -1,37 +1,84 @@
+import { Window } from '@/components/Window';
 import { ExternalLink } from 'lucide-react';
 import { apps } from '@/lib/setup';
 
 export default function SetupPage() {
   return (
-    <div>
-      <div className="mb-10">
-        <h2 className="text-2xl font-bold tracking-tight mb-2">My Setup</h2>
-        <p className="text-gray-500">The utility apps that make the workflow possible — things I&apos;d miss immediately if they disappeared.</p>
+    <Window title="setup.cfg">
+      <div style={{ marginBottom: '32px' }}>
+        <h2 style={{ fontSize: '28px', lineHeight: 1.1, margin: '0 0 8px 0', fontWeight: 700 }}>
+          My Setup
+        </h2>
+        <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', opacity: 0.7, margin: 0 }}>
+          The utility apps that make the workflow possible.
+        </p>
       </div>
 
-      <div className="space-y-8">
-        {apps.map((app) => (
-          <div key={app.name} className="border-b border-gray-100 pb-8 last:border-0 last:pb-0">
-            <div className="flex items-start justify-between mb-1">
-              <div>
-                <span className="font-semibold text-gray-900">{app.name}</span>
-                <span className="ml-2 text-xs text-gray-400 uppercase tracking-wider">{app.category}</span>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '28px' }}>
+        {apps.map((app, i) => (
+          <div
+            key={app.name}
+            style={{
+              borderBottom: i < apps.length - 1 ? '1.5px solid rgba(24,24,24,0.15)' : 'none',
+              paddingBottom: i < apps.length - 1 ? '28px' : '0',
+            }}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '4px' }}>
+              <div style={{ display: 'flex', alignItems: 'baseline', gap: '8px' }}>
+                <span style={{ fontWeight: 700, fontSize: '16px' }}>{app.name}</span>
+                <span style={{
+                  fontFamily: 'var(--font-mono), monospace',
+                  fontSize: '10px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.05em',
+                  opacity: 0.5,
+                }}>
+                  {app.category}
+                </span>
               </div>
               <a
                 href={app.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-xs text-gray-400 hover:text-gray-600 flex items-center gap-1 flex-shrink-0 ml-4"
+                aria-label={`Visit ${app.name} website`}
+                style={{
+                  fontFamily: 'var(--font-mono), monospace',
+                  fontSize: '11px',
+                  opacity: 0.5,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '3px',
+                  color: 'var(--ink)',
+                  textDecoration: 'none',
+                  flexShrink: 0,
+                  marginLeft: '12px',
+                }}
               >
                 {app.url.replace('https://', '').replace('http://', '').split('/')[0]}
                 <ExternalLink size={11} />
               </a>
             </div>
-            <p className="text-sm text-gray-500 mb-2 italic">{app.tagline}</p>
-            <p className="text-sm text-gray-700 leading-relaxed">{app.why}</p>
+            <p style={{
+              fontFamily: 'var(--font-mono), monospace',
+              fontSize: '12px',
+              margin: '0 0 8px 0',
+              opacity: 0.6,
+              fontStyle: 'italic',
+            }}>
+              {app.tagline}
+            </p>
+            <p style={{
+              fontFamily: 'var(--font-mono), monospace',
+              fontSize: '13px',
+              margin: 0,
+              lineHeight: 1.6,
+              opacity: 0.85,
+            }}>
+              {app.why}
+            </p>
           </div>
         ))}
       </div>
-    </div>
+    </Window>
   );
 }

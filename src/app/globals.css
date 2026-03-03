@@ -1,8 +1,48 @@
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
-body {
-  background-color: white;
-  color: rgb(17 24 39);
+:root {
+  --bg-stripe-1: #BCE4E0;
+  --bg-stripe-2: #F2EBD9;
+  --ink: #181818;
+  --paper: #F2EBD9;
+  --white: #FFFFFF;
+  --stroke-width: 2.5px;
+  --shadow-depth: 4px;
+  --window-radius: 12px;
+}
+
+* {
+  box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100dvh;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--bg-stripe-1),
+    var(--bg-stripe-1) 40px,
+    var(--bg-stripe-2) 40px,
+    var(--bg-stripe-2) 80px
+  );
+  color: var(--ink);
+  display: flex;
+  flex-direction: column;
+  overflow-x: hidden;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .window-float { animation: none !important; }
+}
+
+.last-line-item:last-child {
+  border-bottom: none;
 }

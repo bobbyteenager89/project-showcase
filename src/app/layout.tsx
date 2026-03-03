@@ -1,30 +1,40 @@
 import type { Metadata } from 'next';
-import { TabNav } from '@/components/TabNav';
+import { Space_Grotesk, Space_Mono } from 'next/font/google';
+import { DockNav } from '@/components/DockNav';
+import { RetroHeader } from '@/components/RetroHeader';
 import './globals.css';
+
+const spaceGrotesque = Space_Grotesk({
+  subsets: ['latin'],
+  weight: ['500', '700'],
+  variable: '--font-grotesque',
+  display: 'swap',
+  fallback: ['system-ui', 'sans-serif'],
+});
+
+const spaceMono = Space_Mono({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  style: ['normal', 'italic'],
+  variable: '--font-mono',
+  display: 'swap',
+  fallback: ['monospace'],
+});
 
 export const metadata: Metadata = {
   title: 'How I Build',
   description: 'My Claude Code workflow, projects, and setup',
 };
 
-export default function RootLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">
-        <header className="border-b border-gray-200">
-          <div className="max-w-2xl mx-auto px-6 py-6">
-            <h1 className="text-xl font-semibold tracking-tight">How I Build</h1>
-            <p className="text-sm text-gray-500 mt-1">My Claude Code workflow, projects, and tools</p>
-          </div>
-        </header>
-        <TabNav />
-        <main className="max-w-2xl mx-auto px-6 py-10">
+    <html lang="en" className={`${spaceGrotesque.variable} ${spaceMono.variable}`}>
+      <body style={{ fontFamily: 'var(--font-grotesque), system-ui, sans-serif' }}>
+        <RetroHeader />
+        <main style={{ padding: '24px 16px', flexGrow: 1, display: 'flex', flexDirection: 'column', gap: '24px', maxWidth: '640px', margin: '0 auto', width: '100%' }}>
           {children}
         </main>
+        <DockNav />
       </body>
     </html>
   );
