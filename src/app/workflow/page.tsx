@@ -45,20 +45,42 @@ export default function WorkflowPage() {
       </Section>
 
       <Section id="agents" title="Agents">
-        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. I&apos;ve built a library of named agents for specific jobs. When dispatching one, I announce it: <em>&quot;Calling my friend [Agent Name] in to help.&quot;</em></p>
-        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. Each agent lives in <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>~/.claude/agents/</code> and has a numbered prefix that defines its place in the workflow. When dispatching one, I announce it: <em>&quot;Calling my friend [Agent Name] in to help.&quot;</em></p>
+        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {[
-            ['brainstormer', 'Explores requirements, asks questions, presents architecture options before any code is written. Always the first call for new features.'],
-            ['project-resumer', 'Reads PROGRESS.md and recent commits, briefs me on where a project left off. Run at the start of any resumed session.'],
-            ['implementer', 'Executes a written implementation plan task-by-task, commits frequently, self-reviews.'],
-            ['code-reviewer', 'Reviews code for spec compliance, logic, quality, and test coverage.'],
-            ['security-reviewer', 'Scans for OWASP top 10, exposed secrets, auth flaws.'],
-            ['performance-reviewer', 'Checks for slow queries, bundle bloat, render inefficiencies.'],
-            ['compound-docs', 'After solving a hard problem, captures it as searchable documentation so the same issue never costs time twice.'],
-          ].map(([name, desc]) => (
-            <div key={name} style={{ paddingLeft: '12px', borderLeft: '3px solid var(--ink)' }}>
-              <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{name}</p>
-              <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75 }}>{desc}</p>
+            ['00', 'project-resumer', 'Reads PROGRESS.md and recent commits, briefs me on where a project left off. Run at the start of any resumed session.'],
+            ['01', 'brainstormer', 'Explores requirements, asks one question at a time, presents architecture options. Always the first call before any new feature or project.'],
+            ['02', 'planner', 'Turns an approved design into a bite-sized implementation plan with exact file paths, code, and commands. Saved to docs/plans/.'],
+            ['03', 'implementer', 'Executes a written plan task-by-task. Follows TDD, commits frequently, self-reviews before handoff.'],
+            ['05', 'code-reviewer', 'Reviews for spec compliance, logic, architecture, and test coverage.'],
+            ['05a', 'security-reviewer', 'OWASP top 10, auth flaws, injection risks, data exposure. Runs in parallel with code-reviewer.'],
+            ['05b', 'performance-reviewer', 'N+1 queries, bundle size, rendering inefficiencies. Runs in parallel with code-reviewer.'],
+            ['06', 'verifier', 'Runs verification commands and provides evidence before any "done" claim. Mandatory before commits or PRs.'],
+            ['07', 'git-workflow', 'Handles commits, PRs, branch management, and chunking work for easy revert.'],
+            ['08', 'parallel-dispatcher', 'Dispatches 2+ independent agents concurrently and synthesizes results.'],
+            ['09', 'capabilities-advisor', 'Scans the project mid-build and suggests relevant tools, plugins, or patterns I might be missing.'],
+            ['10', 'isolation-checker', 'Verifies correct credentials and no cross-project contamination before committing or deploying.'],
+            ['11', 'compound-docs', 'After solving a hard problem, captures it as searchable documentation so the same issue never costs time twice.'],
+            ['12', 'app-store-ship', 'End-to-end iOS App Store submission — fastlane, metadata, screenshots, TestFlight, compliance, submission.'],
+            ['13', 'researcher', 'Deep-dive research: competitor analysis, tech evaluation, market research, trend analysis with citations.'],
+          ].map(([num, name, desc]) => (
+            <div key={name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <span style={{
+                fontFamily: 'var(--font-mono), monospace',
+                fontSize: '11px',
+                fontWeight: 700,
+                opacity: 0.35,
+                flexShrink: 0,
+                paddingTop: '1px',
+                width: '22px',
+                textAlign: 'right',
+              }}>
+                {num}
+              </span>
+              <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)', flex: 1 }}>
+                <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{name}</p>
+                <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75 }}>{desc}</p>
+              </div>
             </div>
           ))}
         </div>
