@@ -1,9 +1,6 @@
 import type { Metadata } from 'next';
-import { Inter } from 'next/font/google';
 import { TabNav } from '@/components/TabNav';
 import './globals.css';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'How I Build',
@@ -17,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className="font-sans antialiased">
         <header className="border-b border-gray-200">
           <div className="max-w-2xl mx-auto px-6 py-6">
             <h1 className="text-xl font-semibold tracking-tight">How I Build</h1>
