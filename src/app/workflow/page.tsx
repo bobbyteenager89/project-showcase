@@ -143,19 +143,36 @@ export default function WorkflowPage() {
       </Section>
 
       <Section id="agents" title="Agents">
-        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. I announce them when dispatching: <em>&quot;Calling my friend [Agent] in to help.&quot;</em></p>
+        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. Each agent has a numbered prefix that defines its place in the workflow. I announce them when dispatching: <em>&quot;Calling my friend [Agent] in to help.&quot;</em></p>
         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {([
-            ['project-resumer', 'Reads PROGRESS.md and recent commits, briefs me on where we left off.'],
-            ['brainstormer', 'Explores requirements, asks clarifying questions, presents architecture options before any code.'],
-            ['planner', 'Turns an approved design into a bite-sized implementation plan with exact file paths.'],
-            ['implementer', 'Executes a written plan task-by-task. Commits frequently, self-reviews.'],
-            ['code / security / performance reviewers', 'Three parallel reviewers — logic, OWASP vulnerabilities, and efficiency.'],
-            ['verifier', 'Runs verification commands and provides evidence before any "done" claim.'],
-            ['compound-docs', 'After a hard problem, captures it as searchable documentation so it never costs time twice.'],
-            ['app-store-ship', 'End-to-end iOS App Store submission — fastlane, metadata, screenshots, TestFlight, submission.'],
-          ] as [string, string][]).map(([name, desc]) => (
+            ['00', 'project-resumer', 'Reads PROGRESS.md and recent commits. Briefs me on exactly where a project left off before I type anything else.'],
+            ['01', 'brainstormer', 'Explores requirements, asks clarifying questions, presents architecture options. Always dispatched before any new feature or project.'],
+            ['02', 'planner', 'Turns an approved design into a bite-sized implementation plan with exact file paths, code, and commands. Saves to docs/plans/.'],
+            ['03', 'implementer', 'Executes a written plan task-by-task. Follows TDD, commits frequently, self-reviews before handoff.'],
+            ['05', 'code-reviewer', 'Reviews for spec compliance, logic, architecture, and test coverage.'],
+            ['05a', 'security-reviewer', 'OWASP top 10, auth flaws, injection risks, data exposure. Runs in parallel with code-reviewer.'],
+            ['05b', 'performance-reviewer', 'N+1 queries, bundle size, rendering inefficiencies. Runs in parallel with code-reviewer.'],
+            ['06', 'verifier', 'Runs verification commands and provides evidence before any "done" claim. Mandatory before commits or PRs.'],
+            ['07', 'git-workflow', 'Handles commits, PRs, branch management, and chunking work for easy revert.'],
+            ['08', 'parallel-dispatcher', 'Dispatches 2+ independent agents concurrently and synthesizes results.'],
+            ['09', 'capabilities-advisor', 'Scans the project mid-build and suggests relevant tools or patterns I might be missing.'],
+            ['10', 'isolation-checker', 'Verifies correct credentials and no cross-project contamination before committing or deploying.'],
+            ['11', 'compound-docs', 'After solving a hard problem, captures it as searchable documentation so the same issue never costs time twice.'],
+            ['12', 'app-store-ship', 'End-to-end iOS App Store submission — fastlane, metadata, screenshots, TestFlight, compliance, submission.'],
+            ['13', 'researcher', 'Deep-dive research: competitor analysis, tech evaluation, market research, trend analysis with citations.'],
+          ] as [string, string, string][]).map(([num, name, desc]) => (
             <div key={name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <span style={{
+                fontFamily: 'var(--font-mono), monospace',
+                fontSize: '11px',
+                fontWeight: 700,
+                opacity: 0.3,
+                flexShrink: 0,
+                paddingTop: '1px',
+                width: '24px',
+                textAlign: 'right',
+              }}>{num}</span>
               <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)', flex: 1 }}>
                 <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{name}</p>
                 <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>{desc}</p>
@@ -165,13 +182,18 @@ export default function WorkflowPage() {
         </div>
       </Section>
 
-      <Section id="skills-and-commands" title="Skills & Commands">
-        <p>Skills are reusable prompt modules Claude loads on demand. Slash commands invoke them:</p>
-        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
+      <Section id="skills-hooks" title="Skills, Commands & Hooks">
+        <p>Agents do the work. Skills tell them <em>how</em>. Hooks wire it all together automatically.</p>
+
+        <div style={{ marginTop: '20px', marginBottom: '8px', fontFamily: 'var(--font-mono), monospace', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5 }}>Skills</div>
+        <p style={{ marginTop: 0 }}>Skills are reusable prompt modules stored in <code style={mono}>~/.claude/skills/</code>. When an agent loads a skill, it gets a structured set of instructions for that task — how to debug, how to plan, how to review code. The slash command is the shorthand that invokes one.</p>
+        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
           {([
             ['/done', 'Session wrap-up. Updates PROGRESS.md, commits everything, renames the conversation to [Project] — S[N]: [summary] — date.'],
-            ['/preflight', 'Pre-ship check. Runs build, opens the app in a browser, takes screenshots at desktop and mobile widths.'],
-            ['/review-suite', 'Dispatches all three code reviewers in parallel.'],
+            ['/preflight', 'Pre-ship check. Runs build, opens the app in a browser, takes screenshots at desktop and mobile widths. Reports pass/fail with evidence.'],
+            ['/review-suite', 'Dispatches code-reviewer, security-reviewer, and performance-reviewer in parallel. All three run at once.'],
+            ['/brainstorming', 'Loads the brainstorming skill — one clarifying question at a time, then presents a design in sections for validation before any code is written.'],
+            ['/writing-plans', 'Turns a validated design into a bite-sized implementation plan saved to docs/plans/.'],
           ] as [string, string][]).map(([cmd, desc]) => (
             <div key={cmd} style={{ paddingLeft: '12px', borderLeft: '3px solid var(--ink)' }}>
               <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{cmd}</p>
@@ -179,6 +201,48 @@ export default function WorkflowPage() {
             </div>
           ))}
         </div>
+
+        <div style={{ marginTop: '24px', marginBottom: '8px', fontFamily: 'var(--font-mono), monospace', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5 }}>Hooks</div>
+        <p style={{ marginTop: 0 }}>Hooks are shell commands that fire automatically on Claude Code events — session start, before a tool call, after a tool call. They&apos;re the automation layer that makes the system feel alive.</p>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {([
+            ['SessionStart', 'Fires when Claude launches. Reads .projects.json, displays the grouped project list. Every session opens with full context.'],
+            ['PreToolUse → TaskUpdate', 'Fires before any task status change. Lightweight guard to prevent accidental state mutations.'],
+            ['PreToolUse → Bash', 'Fires before shell commands. Used as a checkpoint for destructive operations.'],
+          ] as [string, string][]).map(([event, desc]) => (
+            <div key={event} style={{ paddingLeft: '12px', borderLeft: '3px solid var(--ink)' }}>
+              <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{event}</p>
+              <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75 }}>{desc}</p>
+            </div>
+          ))}
+        </div>
+        <p style={{ marginTop: '16px' }}>One hard-won lesson: <strong>Stop hooks don&apos;t work reliably.</strong> Prompt-type hooks on the Stop event cause JSON validation errors consistently. I use CLAUDE.md rules instead of hooks for anything that needs to happen at session end.</p>
+
+        <div style={{ marginTop: '24px', marginBottom: '8px', fontFamily: 'var(--font-mono), monospace', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', opacity: 0.5 }}>How They Connect</div>
+        <TerminalBlock lines={[
+          '# Session start → hook fires → project list displayed',
+          'SessionStart hook → reads .projects.json → shows grouped list',
+          '',
+          '# I say "take me to Frend"',
+          'Claude → dispatches project-resumer agent (00)',
+          'project-resumer → reads PROGRESS.md + git log → briefs me',
+          '',
+          '# I describe a new feature',
+          'Claude → invokes /brainstorming skill → asks questions',
+          'Skill → dispatches brainstormer agent (01) → design validated',
+          'Claude → invokes /writing-plans skill → plan written',
+          '',
+          '# Implementation',
+          'Claude → dispatches implementer agent (03)',
+          'implementer → commits chunks → signals done',
+          '',
+          '# Pre-ship',
+          'Claude → invokes /review-suite → agents 05, 05a, 05b run in parallel',
+          'Claude → invokes /preflight → verifier agent (06) takes screenshots',
+          '',
+          '# Wrap up',
+          'Claude → invokes /done → PROGRESS.md updated → commit → renamed',
+        ]} />
       </Section>
     </Window>
   );
