@@ -1,85 +1,164 @@
 import { Window } from '@/components/Window';
 import { Section } from '@/components/workflow/Section';
 
+const mono: React.CSSProperties = {
+  fontFamily: 'var(--font-mono), monospace',
+  fontSize: '12px',
+  background: 'var(--white)',
+  padding: '1px 4px',
+  border: '1px solid var(--ink)',
+};
+
+function TerminalBlock({ lines }: { lines: string[] }) {
+  return (
+    <div style={{
+      background: '#181818',
+      border: '2px solid var(--ink)',
+      borderRadius: '8px',
+      padding: '16px 20px',
+      margin: '16px 0',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '6px',
+    }}>
+      {lines.map((line, i) => (
+        <p key={i} style={{
+          fontFamily: 'var(--font-mono), monospace',
+          fontSize: '13px',
+          color: line.startsWith('#') ? 'rgba(255,255,255,0.35)' : line.startsWith('>') ? '#7DD3C8' : '#F2EBD9',
+          margin: 0,
+          whiteSpace: 'pre',
+        }}>
+          {line}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 export default function WorkflowPage() {
   return (
     <Window title="workflow.md">
       <div style={{ marginBottom: '32px' }}>
         <h2 style={{ fontSize: '28px', lineHeight: 1.1, margin: '0 0 8px 0', fontWeight: 700 }}>
-          How I Work with Claude Code
+          How I Work
         </h2>
         <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', opacity: 0.7, margin: 0 }}>
-          A linear walkthrough of my workflow — from the basics to how the system evolved.
+          A linear walkthrough — from opening the terminal to shipping.
         </p>
       </div>
 
-      <Section id="what-is-claude-code" title="What Is Claude Code">
-        <p>Claude Code is Anthropic&apos;s official CLI tool for using Claude as a pair programmer directly in the terminal. Unlike ChatGPT-style chat interfaces, Claude Code has access to your filesystem, can run commands, edit files, search code, and browse the web — it operates as a real agent in your development environment.</p>
-        <p>I use it as my primary development tool. I still write code manually for small edits, but for anything involving multiple files, architecture decisions, or building full features, I&apos;m working with Claude Code.</p>
+      <Section id="starting" title="Starting a Session">
+        <p>I open Terminal and type <code style={mono}>c</code>. That&apos;s it. <code style={mono}>c</code> is a shell alias for <code style={mono}>claude</code> — the Claude Code CLI. It launches immediately in the current directory.</p>
+        <TerminalBlock lines={[
+          '~ $ c',
+          '',
+          '> Good morning. What are we working on?',
+        ]} />
+        <p>From there I either ask to see all my recent projects, or jump straight to one by name.</p>
       </Section>
 
-      <Section id="the-stack" title="The Stack">
+      <Section id="project-navigation" title="Project Navigation">
+        <p>When I start a session without a specific project in mind, I ask Claude to show me what I&apos;ve been working on. It reads a master registry file — <code style={mono}>~/Projects/.projects.json</code> — and renders a grouped list with status and last-worked dates.</p>
+        <TerminalBlock lines={[
+          '> Show me my active projects',
+          '',
+          '# consulting',
+          '  Dossier             last: 2026-03-05',
+          '  Merch Agency        last: 2026-03-04',
+          '',
+          '# ios-apps',
+          '  Sponsio             last: 2026-03-03  ← in review',
+          '  Frend               last: 2026-03-02',
+          '',
+          '# personal',
+          '  Project Showcase    last: 2026-03-03',
+          '  Futures             last: 2026-03-03',
+        ]} />
+        <p>To resume a project I just say <em>&quot;take me to Frend&quot;</em> — Claude reads that project&apos;s <code style={mono}>PROGRESS.md</code> and last commits, then briefs me on exactly where we left off before I&apos;ve typed anything else.</p>
+        <p>Every project also has a <code style={mono}>CLAUDE.md</code> — a project briefing Claude reads automatically. Tech stack, commands, rules, structure. It&apos;s the single source of truth for how each project works.</p>
+      </Section>
+
+      <Section id="the-stack" title="The Web Stack">
         <p>My default starting point for any web project:</p>
-        <ul style={{ marginTop: '12px', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          {[
-            ['Next.js 15 (App Router)', 'full-stack framework, easy to deploy'],
-            ['Tailwind CSS v4', 'utility-first styling, no context switching'],
-            ['TypeScript', 'always, even for quick prototypes'],
-            ['Neon', 'serverless Postgres, free via Vercel integration'],
-            ['Vercel', 'deployment, environment variables, preview branches'],
-          ].map(([tech, desc]) => (
-            <li key={tech}><strong>{tech}</strong> — {desc}</li>
+        <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
+          {([
+            ['Next.js 15', 'App Router', 'Full-stack framework — API routes, server components, and deployment all in one. Easy Vercel integration.'],
+            ['Tailwind CSS v4', 'Styling', 'Utility-first CSS with a CSS-first config. No context switching between files.'],
+            ['TypeScript', 'Language', 'Always, even for quick prototypes. Claude writes better code with types.'],
+            ['Neon', 'Database', 'Serverless Postgres, free via Vercel integration. Set up through the Vercel dashboard — NOT neon.tech directly.'],
+            ['Vercel', 'Deployment', 'Push to GitHub, it deploys. Preview branches, environment variables, edge functions.'],
+            ['Drizzle ORM', 'DB layer', 'Type-safe SQL — schema as TypeScript, migrations as files.'],
+          ] as [string, string, string][]).map(([name, tag, desc]) => (
+            <div key={name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
+              <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)', flex: 1 }}>
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'baseline', marginBottom: '2px' }}>
+                  <span style={{ fontWeight: 700, fontSize: '14px' }}>{name}</span>
+                  <span style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '10px', textTransform: 'uppercase', opacity: 0.45, letterSpacing: '0.05em' }}>{tag}</span>
+                </div>
+                <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>{desc}</p>
+              </div>
+            </div>
           ))}
-        </ul>
-        <p>For iOS: SwiftUI + CloudKit or a lightweight Vercel API proxy. I&apos;ve shipped four iOS apps this way.</p>
+        </div>
+        <p style={{ marginTop: '16px' }}>For iOS: SwiftUI + CloudKit or a lightweight Vercel API proxy. I&apos;ve shipped four iOS apps this way.</p>
       </Section>
 
-      <Section id="project-structure" title="Project Structure">
-        <p>Every project I work on has two files Claude Code creates and maintains:</p>
-        <ul style={{ marginTop: '12px', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <li><strong>CLAUDE.md</strong> — the project&apos;s briefing doc. Tech stack, commands, structure, rules. Claude reads this at the start of every session.</li>
-          <li><strong>PROGRESS.md</strong> — session log. What was done, what&apos;s next. Auto-updated by the <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>/done</code> command.</li>
-        </ul>
-        <p>I also have a global <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>~/.claude/CLAUDE.md</code> with rules that apply everywhere — preferences, model strategy, startup behavior, agent dispatch rules.</p>
-        <p>All projects are tracked in <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>~/Projects/.projects.json</code> — a master registry with status, last worked date, deployment URLs, and descriptions.</p>
+      <Section id="remote-sessions" title="Remote Sessions">
+        <p>I have a Mac Mini running 24/7 on my home network as a persistent build server and personal gateway. When I&apos;m not at my desk — including from my phone — I can SSH in and pick up exactly where I left off.</p>
+
+        <div style={{ marginTop: '16px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)' }}>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 4px 0' }}>Tailscale</p>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>
+              My three devices — MacBook Pro, Mac Mini, and iPhone — are on a private Tailscale network. The Mac Mini is always reachable at <code style={{ ...mono, fontSize: '11px' }}>jeffs-mac-mini</code> regardless of what network I&apos;m on. No port forwarding, no VPN config.
+            </p>
+          </div>
+
+          <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)' }}>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 4px 0' }}>Terminus (iPhone)</p>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>
+              Terminus is an SSH client for iPhone. I open it, connect to the Mac Mini over Tailscale, and I&apos;m in a real terminal on my phone. Swipe keyboard, full color, all the tools.
+            </p>
+          </div>
+
+          <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)' }}>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 4px 0' }}>tmux</p>
+            <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>
+              tmux keeps sessions alive on the Mac Mini between connections. I can start a Claude session on my laptop, disconnect, SSH in from my phone, and reattach to the exact same running session. Nothing is lost.
+            </p>
+          </div>
+        </div>
+
+        <TerminalBlock lines={[
+          '# On iPhone via Terminus:',
+          'ssh andrewgoble@jeffs-mac-mini',
+          'tmux attach',
+          '',
+          '# Picks up exactly where I left off',
+          '> Where were we? ...',
+        ]} />
+
+        <p>The Mac Mini also runs OpenClaw — a personal AI gateway. It&apos;s a self-hosted proxy that lets me hit Claude and other models from any device on the Tailscale network through a single authenticated endpoint.</p>
       </Section>
 
       <Section id="agents" title="Agents">
-        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. Each agent lives in <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>~/.claude/agents/</code> and has a numbered prefix that defines its place in the workflow. When dispatching one, I announce it: <em>&quot;Calling my friend [Agent Name] in to help.&quot;</em></p>
+        <p>Claude Code can spawn sub-agents — separate Claude instances with their own context and tool access. I announce them when dispatching: <em>&quot;Calling my friend [Agent] in to help.&quot;</em></p>
         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '10px' }}>
-          {[
-            ['00', 'project-resumer', 'Reads PROGRESS.md and recent commits, briefs me on where a project left off. Run at the start of any resumed session.'],
-            ['01', 'brainstormer', 'Explores requirements, asks one question at a time, presents architecture options. Always the first call before any new feature or project.'],
-            ['02', 'planner', 'Turns an approved design into a bite-sized implementation plan with exact file paths, code, and commands. Saved to docs/plans/.'],
-            ['03', 'implementer', 'Executes a written plan task-by-task. Follows TDD, commits frequently, self-reviews before handoff.'],
-            ['05', 'code-reviewer', 'Reviews for spec compliance, logic, architecture, and test coverage.'],
-            ['05a', 'security-reviewer', 'OWASP top 10, auth flaws, injection risks, data exposure. Runs in parallel with code-reviewer.'],
-            ['05b', 'performance-reviewer', 'N+1 queries, bundle size, rendering inefficiencies. Runs in parallel with code-reviewer.'],
-            ['06', 'verifier', 'Runs verification commands and provides evidence before any "done" claim. Mandatory before commits or PRs.'],
-            ['07', 'git-workflow', 'Handles commits, PRs, branch management, and chunking work for easy revert.'],
-            ['08', 'parallel-dispatcher', 'Dispatches 2+ independent agents concurrently and synthesizes results.'],
-            ['09', 'capabilities-advisor', 'Scans the project mid-build and suggests relevant tools, plugins, or patterns I might be missing.'],
-            ['10', 'isolation-checker', 'Verifies correct credentials and no cross-project contamination before committing or deploying.'],
-            ['11', 'compound-docs', 'After solving a hard problem, captures it as searchable documentation so the same issue never costs time twice.'],
-            ['12', 'app-store-ship', 'End-to-end iOS App Store submission — fastlane, metadata, screenshots, TestFlight, compliance, submission.'],
-            ['13', 'researcher', 'Deep-dive research: competitor analysis, tech evaluation, market research, trend analysis with citations.'],
-          ].map(([num, name, desc]) => (
+          {([
+            ['project-resumer', 'Reads PROGRESS.md and recent commits, briefs me on where we left off.'],
+            ['brainstormer', 'Explores requirements, asks clarifying questions, presents architecture options before any code.'],
+            ['planner', 'Turns an approved design into a bite-sized implementation plan with exact file paths.'],
+            ['implementer', 'Executes a written plan task-by-task. Commits frequently, self-reviews.'],
+            ['code / security / performance reviewers', 'Three parallel reviewers — logic, OWASP vulnerabilities, and efficiency.'],
+            ['verifier', 'Runs verification commands and provides evidence before any "done" claim.'],
+            ['compound-docs', 'After a hard problem, captures it as searchable documentation so it never costs time twice.'],
+            ['app-store-ship', 'End-to-end iOS App Store submission — fastlane, metadata, screenshots, TestFlight, submission.'],
+          ] as [string, string][]).map(([name, desc]) => (
             <div key={name} style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <span style={{
-                fontFamily: 'var(--font-mono), monospace',
-                fontSize: '11px',
-                fontWeight: 700,
-                opacity: 0.35,
-                flexShrink: 0,
-                paddingTop: '1px',
-                width: '22px',
-                textAlign: 'right',
-              }}>
-                {num}
-              </span>
               <div style={{ paddingLeft: '12px', borderLeft: '2px solid var(--ink)', flex: 1 }}>
                 <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{name}</p>
-                <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75 }}>{desc}</p>
+                <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75, lineHeight: 1.5 }}>{desc}</p>
               </div>
             </div>
           ))}
@@ -87,43 +166,19 @@ export default function WorkflowPage() {
       </Section>
 
       <Section id="skills-and-commands" title="Skills & Commands">
-        <p>Skills are reusable prompt modules — structured instructions Claude loads on demand. Slash commands invoke them. The ones I use most:</p>
+        <p>Skills are reusable prompt modules Claude loads on demand. Slash commands invoke them:</p>
         <div style={{ marginTop: '12px', display: 'flex', flexDirection: 'column', gap: '12px' }}>
-          {[
-            ['/done', 'End-of-session wrap-up. Updates PROGRESS.md, commits everything, renames the conversation to [Project] — S[N]: [summary] — date.'],
-            ['/preflight', 'Pre-ship check. Runs build, opens the app in a browser, takes screenshots at desktop and mobile widths. Reports pass/fail with evidence.'],
-            ['/review-suite', 'Dispatches all three code reviewers in parallel (code, security, performance).'],
-            ['/brainstorming', 'Opens the brainstorming skill — one question at a time, then presents a design in sections for validation.'],
-            ['/writing-plans', 'Turns a validated design into a bite-sized implementation plan saved to docs/plans/.'],
-          ].map(([cmd, desc]) => (
+          {([
+            ['/done', 'Session wrap-up. Updates PROGRESS.md, commits everything, renames the conversation to [Project] — S[N]: [summary] — date.'],
+            ['/preflight', 'Pre-ship check. Runs build, opens the app in a browser, takes screenshots at desktop and mobile widths.'],
+            ['/review-suite', 'Dispatches all three code reviewers in parallel.'],
+          ] as [string, string][]).map(([cmd, desc]) => (
             <div key={cmd} style={{ paddingLeft: '12px', borderLeft: '3px solid var(--ink)' }}>
               <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '13px', fontWeight: 700, margin: '0 0 2px 0' }}>{cmd}</p>
               <p style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', margin: 0, opacity: 0.75 }}>{desc}</p>
             </div>
           ))}
         </div>
-      </Section>
-
-      <Section id="hooks-and-automation" title="Hooks & Automation">
-        <p>Claude Code supports hooks — shell commands that run automatically in response to events (session start, tool use, etc.). My setup:</p>
-        <ul style={{ marginTop: '12px', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <li><strong>SessionStart hook</strong> — reads <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>.projects.json</code>, displays the project list grouped by category.</li>
-          <li><strong>PreToolUse hooks</strong> — lightweight guards on TaskUpdate and Bash calls.</li>
-        </ul>
-        <p>One thing I learned the hard way: <strong>Stop hooks don&apos;t work reliably.</strong> Prompt-type hooks on the Stop event cause JSON validation errors consistently. I use CLAUDE.md rules instead.</p>
-        <p>The session naming system is also automated — after the first meaningful action, Claude renames the conversation to <code style={{ fontFamily: 'var(--font-mono), monospace', fontSize: '12px', background: 'var(--white)', padding: '1px 4px', border: '1px solid var(--ink)' }}>[Project] — S[N]: [description] — YYYY-MM-DD</code>.</p>
-      </Section>
-
-      <Section id="settings-and-evolution" title="Settings & Evolution">
-        <p>My global CLAUDE.md has gone through many iterations. A few things that evolved:</p>
-        <ul style={{ marginTop: '12px', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <li><strong>Model strategy</strong> — Opus for architecture/review, Sonnet for implementation, Haiku for quick lookups. Meaningfully reduced cost and latency.</li>
-          <li><strong>Question format</strong> — standardized to AskUserQuestion with multi-choice tabs. Batches clarifying questions into structured forms.</li>
-          <li><strong>YAGNI enforcement</strong> — explicit rules against over-engineering. Minimum complexity for the current task.</li>
-          <li><strong>Session checkpoints</strong> — confirm the session deliverable at start: &quot;The goal for this session is X. I&apos;ll tell you when that&apos;s done.&quot;</li>
-          <li><strong>Auto-memory</strong> — Claude maintains a /memory/ directory with topic files. Persist across sessions and update as new patterns emerge.</li>
-        </ul>
-        <p>The system keeps getting better because Claude itself maintains the docs. Rule: if you solved something hard, document it immediately.</p>
       </Section>
     </Window>
   );
