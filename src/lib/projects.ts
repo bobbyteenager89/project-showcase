@@ -53,8 +53,6 @@ export const projectGroups: ProjectGroup[] = [
   {
     label: 'Personal',
     projects: [
-      { name: 'Futures', description: 'Interactive idea presentation — share future work ideas with close friends for honest feedback. Scorecard, reaction-based feedback, star picks.', type: 'lineItem', deployment: 'https://futures-sage.vercel.app', lastWorked: '2026-03-02' },
-      { name: 'Tax Prep', description: 'Personal tax document organizer and accountant handoff tool.', type: 'lineItem', deployment: 'https://tax-prep.vercel.app', lastWorked: '2026-02-27' },
       { name: 'Photo Archive', description: 'Consolidating ~20TB of photography (9x 2TB drives) into a tiered archive.', type: 'lineItem', lastWorked: '2026-02-23' },
     ],
   },
@@ -69,10 +67,8 @@ export const projectGroups: ProjectGroup[] = [
   {
     label: 'Utilities & Infrastructure',
     projects: [
-      { name: 'Personal OS PWA', description: 'Next.js PWA chat interface with Command Center — 4-tab productivity hub (Today, Projects, Activity, Time).', type: 'lineItem', deployment: 'https://personal-os-pwa.vercel.app', lastWorked: '2026-03-03' },
       { name: 'Visualizer', description: 'Interactive D3.js visualization platform exploring mental models, datasets, and concepts.', type: 'lineItem', deployment: 'https://visualizer-ten-sandy.vercel.app', lastWorked: '2026-03-03' },
       { name: 'Data Cleanup Dashboard', description: 'Terminal-aesthetic dashboard tracking a 9-drive cleanup and archive pipeline.', type: 'lineItem', deployment: 'https://data-cleanup-dashboard.vercel.app', lastWorked: '2026-02-23' },
-      { name: 'Project Health Dashboard', description: 'Health status dashboard for all active projects — staleness, dependency freshness, deploy status.', type: 'lineItem', deployment: 'https://project-health-dashboard-beryl.vercel.app', lastWorked: '2026-02-28' },
     ],
   },
 ];
