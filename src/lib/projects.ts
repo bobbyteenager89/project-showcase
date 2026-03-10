@@ -22,8 +22,8 @@ export const projectGroups: ProjectGroup[] = [
     label: 'Consulting',
     projects: [
       { name: 'Dossier', description: 'Consulting command center — multiple research wikis for client meetings. Agent-driven research, editorial design, custom interactive models.', type: 'lineItem', lastWorked: '2026-03-01' },
-      { name: 'Merch Agency (Factum Studio)', description: 'Physical goods & experiences agency operational platform. Three zones: internal OS, client dashboard, Shopify operations.', type: 'lineItem', deployment: 'https://factum-studio.vercel.app', lastWorked: '2026-03-02' },
-      { name: 'Factum Studio Site', description: 'Marketing site for Factum Studio merch agency.', type: 'lineItem', deployment: 'https://factum-studio-site.vercel.app', lastWorked: '2026-02-23' },
+      { name: 'Merch Agency (Polpa Studio)', description: 'Physical goods & experiences agency operational platform. Three zones: internal OS, client dashboard, Shopify operations.', type: 'lineItem', deployment: 'https://factum-studio.vercel.app', lastWorked: '2026-03-02' },
+      { name: 'Polpa Studio Site', description: 'Marketing site for Polpa Studio merch agency.', type: 'lineItem', deployment: 'https://factum-studio-site.vercel.app', lastWorked: '2026-02-23' },
       { name: 'Mobile Gaming Growth Research', description: 'Growth marketing research pack + interactive playbook for a new puzzle game studio.', type: 'lineItem', lastWorked: '2026-02-09' },
     ],
   },
